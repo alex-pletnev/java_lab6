@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import data.City;
+import util.CollectionManager;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -15,12 +16,12 @@ import java.util.TreeSet;
 
 public class JsonCollectionParser {
 
-    public void parseJsonToSet() {
+    public void parseJsonToSet(CollectionManager collectionManager) {
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
         List<String> dateList = new ArrayList<>();
-        File file = new File(CollectionManager.FILE_PATH);
+        File file = new File(collectionManager.getFilePath());
         try {
             if (!file.exists()) {
                 file.createNewFile();
@@ -29,14 +30,13 @@ public class JsonCollectionParser {
             System.err.println("Недостаточно прав для создания файла или указан неверный путь!");
             exception.printStackTrace();
         }
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(CollectionManager.FILE_PATH))) {
+        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(collectionManager.getFilePath()))) {
             //парсинг всего кроме creationDate
             Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
             String json = scanner.hasNext() ? scanner.next() : "";
 
             TreeSet<City> collection = gson.fromJson(json, new TypeToken<TreeSet<City>>() {}.getType());
             if (collection != null) {
-                City.setIdCounter(City.getIdCounter() + collection.size());
 
                 //парсинг creationDate
                 String[] splitJson = json.split("\n");
@@ -57,26 +57,13 @@ public class JsonCollectionParser {
                     }
 
                 }
-                //крооекция id
-                long maxId = 0;
-                List<Long> idList = new ArrayList<>();
-                for (City city : collection) {
-                    idList.add(city.getId());
-                    maxId = Long.max(maxId, city.getId());
-                }
-                City.setIdCounter(maxId);
-                for (long j = 1; i <= maxId; i++) {
-                    if (!idList.contains(j)) {
-                        CollectionManager.lostIdList.add(j);
-                    }
-                }
                 for (City city : collection) {
                     if (city.validation()) {
-                        CollectionManager.collection.add(city);
+                        collectionManager.getCollection().add(city);
                     }
                 }
             } else {
-                CollectionManager.collection = new TreeSet<>();
+                collectionManager.setCollection(new TreeSet<>());
             }
         } catch (IOException ex) {
             System.err.println("Ошибка при чтении файла!");

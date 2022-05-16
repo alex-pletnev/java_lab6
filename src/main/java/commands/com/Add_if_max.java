@@ -1,28 +1,53 @@
 package commands.com;
 
-import collection.CollectionManager;
 import commands.CommandAbstract;
 import commands.ElementInput;
 import data.City;
+import exception.ArgumentException;
+import exception.CommandException;
+import util.Manager;
+import util.Reply;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class Add_if_max extends CommandAbstract {
+    private final String name = "add_if_max";
+
+    @Override
+    public List<Object> checkArguments(Scanner scanner, int mode) throws ArgumentException {
+        if (getArgList().size() != 0) {
+            throw new ArgumentException("Аргумент введен неверно!");
+        }
+        City newCity = ElementInput.getNewElement(scanner, mode);
+        if (newCity == null) {
+            throw new ArgumentException("Ошибка в файле");
+        }        getArgList().add(newCity);
+
+        return getArgList();
+    }
+
     @Override
     public boolean getNewEl() {
         return true;
     }
     @Override
-    public boolean on(Scanner scanner) {
-        City newCity = ElementInput.getNewElement(scanner);
-        for (City city : CollectionManager.collection) {
-            if (newCity.compareTo(city) < 0) {
-                System.err.println("Новый элемент не добавлет т.к. не максимальный");
-                CollectionManager.lostIdList.add(newCity.getId());
-                return false;
-            }
+    public Reply execute(Manager manager) throws CommandException{
+        City newCity = (City) getArgList().get(0);
+        City maxCity = manager.getCollectionManager().getCollection()
+                .stream()
+                .max(Comparator.comparing(City::getCoordinates))
+                .orElse(null);
+        if (maxCity == null) {
+            manager.getCollectionManager().getCollection().add(newCity);
+            return new Reply("Элемент добавлен!");
         }
-        CollectionManager.collection.add(newCity);
-        return true;
+        if (newCity.compareTo(maxCity) < 0) {
+                throw new CommandException("Новый элемент не добавлет т.к. не максимальный");
+        }
+
+        manager.getCollectionManager().getCollection().add(newCity);
+        return new Reply("Элемент добавлен!");
     }
 }

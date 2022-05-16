@@ -1,14 +1,13 @@
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestMain {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        try{
-            int i = Integer.parseInt(scanner.nextLine());
-            System.out.println("cyk");
-        } catch (NumberFormatException ex) {
-            ex.printStackTrace();
-        }
+        String str = "qwerty";
+        List<Object> oList = new ArrayList<>();
+        oList.add(str);
+        str = (String) oList.get(0);
+        System.out.println(str);
 
     }
 }

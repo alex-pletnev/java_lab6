@@ -1,14 +1,33 @@
 package commands.com;
 
-import collection.CollectionManager;
 import commands.CommandAbstract;
 import commands.ElementInput;
 import data.City;
+import exception.ArgumentException;
+import exception.CommandException;
+import util.Manager;
+import util.Reply;
 
+import java.util.List;
 import java.util.Scanner;
 
 
 public class Add extends CommandAbstract {
+    private final String name = "add";
+
+    @Override
+    public List<Object> checkArguments(Scanner scanner, int mode) throws ArgumentException {
+        if (getArgList().size() != 0) {
+            throw new ArgumentException("Аргумент введен неверно!");
+        }
+        City newCity = ElementInput.getNewElement(scanner, mode);
+        if (newCity == null) {
+            throw new ArgumentException("Ошибка в файле");
+        }
+        getArgList().add(newCity);
+
+        return getArgList();
+    }
 
     @Override
     public boolean getNewEl() {
@@ -16,20 +35,18 @@ public class Add extends CommandAbstract {
     }
 
     @Override
-    public boolean on(Scanner scanner) {
-        City newCity = ElementInput.getNewElement(scanner);
-        for (City city : CollectionManager.collection) {
+    public Reply execute(Manager manager) throws CommandException{
+        City newCity = (City) getArgList().get(0);
+        for (City city : manager.getCollectionManager().getCollection()) {
             if (newCity.compareTo(city) == 0) {
-                CollectionManager.lostIdList.add(newCity.getId());
-                System.err.println("Элемент не добавленн т.к. элемент эквивкелентный этому уже есть!");
-                return false;
+                throw new CommandException("Элемент не добавленн т.к. элемент эквивкелентный этому уже есть!");
             }
         }
 
 
-        CollectionManager.collection.add(newCity);
+        manager.getCollectionManager().getCollection().add(newCity);
 
-        return true;
+        return new Reply("Элемент добавлен!");
     }
 
 

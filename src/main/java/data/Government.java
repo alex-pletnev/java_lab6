@@ -1,6 +1,9 @@
 package data;
 
-public enum Government {
+import java.io.Serializable;
+
+public enum Government implements Serializable {
+
     ARISTOCRACY("АРИСТОКРАТИЯ", "аристовратия"),
     GERONTOCRACY("ГЕРОНТОКРАТИЯ", "геронтократия"),
     DESPOTISM("ДЕСПОТИЗМ", "деспотизм"),
@@ -8,6 +11,8 @@ public enum Government {
 
     private final String upReg;
     private final String lowReg;
+    private static final long serialVersionUID = 12L;
+
     Government(String upReg, String lowReg) {
         this.upReg = upReg;
         this.lowReg = lowReg;

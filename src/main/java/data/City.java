@@ -1,17 +1,16 @@
 package data;
 
 
-import collection.CollectionManager;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import util.IdManager;
 
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Objects;
 
-public class City implements Comparable<City> {
-    private static long idCounter = 0;
-
+public class City implements Comparable<City>, Serializable {
+    private static final long serialVersionUID = 10L;
     private java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     @Expose
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
@@ -41,16 +40,7 @@ public class City implements Comparable<City> {
                 Integer population, double metersAboveSeaLevel,
                 float timezone, boolean capital,
                 Government government, Human governor) {
-
-        if (CollectionManager.lostIdList.size() == 0) {
-            idCounter++;
-            this.id = idCounter;
-        } else {
-            Collections.sort(CollectionManager.lostIdList);
-            this.id = CollectionManager.lostIdList.get(0);
-            CollectionManager.lostIdList.remove(0);
-        }
-
+        id = IdManager.generateNewId();
         this.name = name;
         this.coordinates = coordinates;
         this.creationDate = LocalDate.now();
@@ -62,10 +52,7 @@ public class City implements Comparable<City> {
         this.government = government;
         this.governor = governor;
         this.creationDateStr = String.valueOf(creationDate);
-    }
 
-    public static long getIdCounter() {
-        return idCounter;
     }
 
     public long getId() {
@@ -116,16 +103,12 @@ public class City implements Comparable<City> {
         return creationDateStr;
     }
 
-    public void setCreationDateStr(String creationDateStr) {
-        this.creationDateStr = creationDateStr;
-    }
-
-    public static void setIdCounter(long idCounter) {
-        City.idCounter = idCounter;
-    }
-
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setCreationDateStr(String creationDateStr) {
+        this.creationDateStr = creationDateStr;
     }
 
     public void setName(String name) {
@@ -195,7 +178,7 @@ public class City implements Comparable<City> {
 
     @Override
     public int compareTo(City city) {
-            return this.getName().compareTo(city.getName());
+            return this.getCoordinates().compareTo(city.getCoordinates());
 
     }
 
