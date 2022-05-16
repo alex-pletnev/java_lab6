@@ -5,9 +5,9 @@
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>lab5.alex</groupId>
-    <name>lab5</name>
-    <artifactId>java_lab5</artifactId>
+    <groupId>lab6.alex</groupId>
+    <name>lab6</name>
+    <artifactId>java_lab6</artifactId>
     <version>1.0</version>
 
     <dependencies>
@@ -30,7 +30,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <build>
-        <finalName>lab5</finalName>
+        <finalName>lab6</finalName>
         <defaultGoal>package</defaultGoal>
         <plugins>
             <plugin>
@@ -43,7 +43,7 @@
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                <mainClass>Main</mainClass>
+                                <mainClass>ServerUDP</mainClass>
                                 <packageName>java</packageName>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
